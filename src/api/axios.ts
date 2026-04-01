@@ -9,9 +9,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem('token');
+    let token = await AsyncStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // Remover comillas dobles accidentales si se guardó como JSON string
+      token = token.replace(/^["']|["']$/g, '');
+      config.headers.set('Authorization', `Bearer ${token}`);
     }
     return config;
   },
