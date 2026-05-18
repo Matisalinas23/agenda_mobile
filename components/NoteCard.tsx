@@ -1,7 +1,12 @@
-import { Calendar, Edit3, Trash2, Check, X } from 'lucide-react-native';
-import { Text, TouchableOpacity, View, TextInput, ActivityIndicator } from 'react-native';
+import { Calendar, Edit3, Trash2, Check, X, ChevronDown, ChevronUp } from 'lucide-react-native';
+import { Text, TouchableOpacity, View, TextInput, ActivityIndicator, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { useState } from 'react';
 import type { INote, ICreateNote } from '../interfaces/notes.interface';
+
+// Enable LayoutAnimation for Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 interface NoteCardProps {
   note: INote;
@@ -12,6 +17,7 @@ interface NoteCardProps {
 export default function NoteCard({ note, onDelete, onEdit }: NoteCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   
   // States for editing
   const [title, setTitle] = useState(note.title);
@@ -51,6 +57,11 @@ export default function NoteCard({ note, onDelete, onEdit }: NoteCardProps) {
     setIsEditing(false);
   };
 
+  const toggleExpand = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsExpanded(!isExpanded);
+  };
+
   // Lógica de colores para la fecha
   const getDueDateStatus = () => {
     const today = new Date();
@@ -70,7 +81,7 @@ export default function NoteCard({ note, onDelete, onEdit }: NoteCardProps) {
 
   if (isEditing) {
     return (
-      <View className="bg-white rounded-3xl p-5 mb-4 shadow-md border-2 border-primary/20">
+      <View className="bg-white dark:bg-dark-card rounded-3xl p-4 mb-4 shadow-md border-2 border-primary/20 dark:border-primary/10">
         <View className="flex-row justify-between items-start mb-3">
           <View className="px-3 py-1 rounded-full" style={{ backgroundColor: note.color + '20' }}>
             <Text className="font-manrope font-bold text-xs" style={{ color: note.color }}>
@@ -78,7 +89,7 @@ export default function NoteCard({ note, onDelete, onEdit }: NoteCardProps) {
             </Text>
           </View>
           <View className="flex-row gap-2">
-            <TouchableOpacity onPress={handleCancel} disabled={isLoading} className="p-2 bg-gray-100 rounded-full">
+            <TouchableOpacity onPress={handleCancel} disabled={isLoading} className="p-2 bg-gray-100 dark:bg-slate-800 rounded-full">
               <X size={18} color="#64748b" />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleSave} disabled={isLoading} className="p-2 bg-primary/20 rounded-full">
@@ -91,7 +102,7 @@ export default function NoteCard({ note, onDelete, onEdit }: NoteCardProps) {
           value={title}
           onChangeText={setTitle}
           placeholder="Título"
-          className="text-xl font-manrope font-bold text-primary-dark mb-2 border-b border-gray-200 pb-1"
+          className="text-xl font-manrope font-bold text-primary-dark dark:text-white mb-2 border-b border-gray-200 dark:border-slate-700 pb-1"
         />
         
         <TextInput
@@ -99,16 +110,16 @@ export default function NoteCard({ note, onDelete, onEdit }: NoteCardProps) {
           onChangeText={setDescription}
           placeholder="Descripción"
           multiline
-          className="text-gray-600 font-manrope text-sm mb-4 border-b border-gray-200 pb-1"
+          className="text-gray-600 dark:text-gray-400 font-manrope text-sm mb-4 border-b border-gray-200 dark:border-slate-700 pb-1"
         />
 
-        <View className="flex-row items-center pt-3 border-t border-secondary/50">
+        <View className="flex-row items-center pt-3 border-t border-secondary/50 dark:border-slate-700">
           <Calendar size={16} color="#94a3b8" />
           <TextInput
             value={limitDate}
             onChangeText={setLimitDate}
             placeholder="YYYY-MM-DD"
-            className="text-gray-500 font-manrope text-xs ml-2 border-b border-gray-200 flex-1 py-0"
+            className="text-gray-500 dark:text-gray-400 font-manrope text-xs ml-2 border-b border-gray-200 dark:border-slate-700 flex-1 py-0"
           />
         </View>
       </View>
@@ -116,7 +127,11 @@ export default function NoteCard({ note, onDelete, onEdit }: NoteCardProps) {
   }
 
   return (
-    <View className="bg-white rounded-3xl p-5 mb-4 shadow-sm border border-secondary">
+    <TouchableOpacity 
+      activeOpacity={0.8} 
+      onPress={toggleExpand} 
+      className="bg-white dark:bg-dark-card rounded-3xl p-4 mb-4 shadow-sm border border-secondary dark:border-slate-700"
+    >
       <View className="flex-row justify-between items-start mb-3">
         <View
           className="px-3 py-1 rounded-full"
@@ -126,43 +141,52 @@ export default function NoteCard({ note, onDelete, onEdit }: NoteCardProps) {
             {note.assignature.toUpperCase()}
           </Text>
         </View>
-        <View className="flex-row gap-2">
-          <TouchableOpacity onPress={() => setIsEditing(true)} className="p-2 bg-secondary/30 rounded-full">
-            <Edit3 size={18} color="#3686FF" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => onDelete(note.id)} className="p-2 bg-red-50 rounded-full">
-            <Trash2 size={18} color="#ef4444" />
-          </TouchableOpacity>
+
+        {/* Date and status always visible */}
+        <View className="flex-row items-center gap-4">
+          <View className="flex-row items-center">
+            <Calendar size={16} color={status.color} />
+            <Text 
+              className="font-manrope text-xs ml-2 font-semibold"
+              style={{ color: status.color }}
+            >
+            {formattedDateView}
+            </Text>
+          </View>
+          <View 
+            className="px-2 py-0.5 bg-opacity-50 rounded-lg"
+            style={{ backgroundColor: status.bg }}
+          >
+            <Text className="text-[10px] font-manrope font-bold" style={{ color: status.color }}>
+              {status.text.toUpperCase()}
+            </Text>
+          </View>
         </View>
       </View>
 
-      <Text className="text-xl font-manrope font-bold text-primary-dark mb-2">
+      <Text className="text-xl font-manrope font-bold text-primary-dark dark:text-white">
         {note.title}
       </Text>
 
-      <Text className="text-gray-500 font-manrope text-sm mb-4" numberOfLines={2}>
-        {note.description}
-      </Text>
-
-      <View className="flex-row items-center justify-between pt-3 border-t border-secondary/50">
-        <View className="flex-row items-center">
-          <Calendar size={16} color={status.color} />
-          <Text 
-            className="font-manrope text-xs ml-2 font-semibold"
-            style={{ color: status.color }}
-          >
-            Entrega: {formattedDateView}
+      {/* Expanded Content */}
+      {isExpanded && (
+        <View>
+          <Text className="text-gray-500 dark:text-gray-400 font-manrope text-sm mb-4 mt-2">
+            {note.description || "Sin descripción"}
           </Text>
+          
+          <View className="flex-row justify-around gap-3 mb-1">
+            <TouchableOpacity onPress={() => setIsEditing(true)} className="flex-row items-center px-8 py-2 bg-secondary/30 dark:bg-secondary/10 rounded-xl">
+              <Edit3 size={16} color="#3686FF" />
+              <Text className="ml-1 font-manrope text-xs text-primary dark:text-blue-400 font-semibold">Editar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onDelete(note.id)} className="flex-row items-center px-8 py-2 bg-red-50 dark:bg-red-900/20 rounded-xl">
+              <Trash2 size={16} color="#ef4444" />
+              <Text className="ml-1 font-manrope text-xs text-red-500 dark:text-red-400 font-semibold">Borrar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View 
-          className="px-2 py-0.5 rounded-lg"
-          style={{ backgroundColor: status.bg }}
-        >
-          <Text className="text-[10px] font-manrope font-bold" style={{ color: status.color }}>
-            {status.text.toUpperCase()}
-          </Text>
-        </View>
-      </View>
-    </View>
+      )}
+    </TouchableOpacity>
   );
 }

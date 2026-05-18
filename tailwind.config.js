@@ -13,6 +13,8 @@ module.exports = {
         'secondary-dark': '#5462a1',
         'primary-dark': '#1463da',
         'accent-dark': '#031c66e0',
+        'dark-bg': '#0B1326',
+        'dark-card': '#1E293B',
       },
       fontFamily: {
         manrope: ['Manrope', 'sans-serif'],

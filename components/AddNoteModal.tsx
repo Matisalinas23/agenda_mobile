@@ -12,6 +12,7 @@ import {
   Alert
 } from 'react-native';
 import { X, Calendar, BookOpen, Type, AlignLeft } from 'lucide-react-native';
+import { useColorScheme } from 'nativewind';
 import type { ICreateNote } from '../interfaces/notes.interface';
 
 interface AddNoteModalProps {
@@ -37,6 +38,7 @@ const colors = [
 ];
 
 export default function AddNoteModal({ isVisible, onClose, onSave }: AddNoteModalProps) {
+  const { colorScheme } = useColorScheme();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState<ICreateNote>({
     title: '',
@@ -83,71 +85,75 @@ export default function AddNoteModal({ isVisible, onClose, onSave }: AddNoteModa
         style={{ flex: 1 }}
       >
         <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-white rounded-t-[40px] px-6 pt-8 pb-10 shadow-xl">
+          <View className="bg-white dark:bg-dark-card rounded-t-[40px] px-6 pt-8 pb-10 shadow-xl">
             {/* Header */}
             <View className="flex-row justify-between items-center mb-8">
-              <Text className="text-2xl font-manrope font-bold text-primary-dark">
+              <Text className="text-2xl font-manrope font-bold text-primary-dark dark:text-white">
                 Nueva Nota
               </Text>
-              <TouchableOpacity onPress={onClose} className="p-2 bg-secondary/50 rounded-full">
-                <X size={24} color="#1e293b" />
+              <TouchableOpacity onPress={onClose} className="p-2 bg-secondary/50 dark:bg-slate-800 rounded-full">
+                <X size={24} color={colorScheme === 'dark' ? '#cbd5e1' : '#1e293b'} />
               </TouchableOpacity>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} className="space-y-6">
               {/* Asignatura */}
               <View>
-                <Text className="text-primary-dark font-manrope font-semibold mb-2 ml-1">Asignatura</Text>
-                <View className="flex-row items-center bg-gray-50 border border-secondary rounded-2xl px-4 py-1">
+                <Text className="text-primary-dark dark:text-gray-300 font-manrope font-semibold mb-2 ml-1">Asignatura</Text>
+                <View className="flex-row items-center bg-gray-50 dark:bg-dark-card border border-secondary dark:border-slate-700 rounded-2xl px-4 py-1">
                   <BookOpen size={20} color="#94a3b8" />
                   <TextInput
                     value={form.assignature}
                     onChangeText={(val) => setForm({ ...form, assignature: val })}
                     placeholder="Ej: Matemáticas"
-                    className="flex-1 h-12 ml-3 font-manrope text-primary-dark"
+                    placeholderTextColor={colorScheme === 'dark' ? '#64748b' : undefined}
+                    className="flex-1 h-12 ml-3 font-manrope text-primary-dark dark:text-white"
                   />
                 </View>
               </View>
 
               {/* Título */}
               <View className="mt-4">
-                <Text className="text-primary-dark font-manrope font-semibold mb-2 ml-1">Título</Text>
-                <View className="flex-row items-center bg-gray-50 border border-secondary rounded-2xl px-4 py-1">
+                <Text className="text-primary-dark dark:text-gray-300 font-manrope font-semibold mb-2 ml-1">Título</Text>
+                <View className="flex-row items-center bg-gray-50 dark:bg-dark-card border border-secondary dark:border-slate-700 rounded-2xl px-4 py-1">
                   <Type size={20} color="#94a3b8" />
                   <TextInput
                     value={form.title}
                     onChangeText={(val) => setForm({ ...form, title: val })}
                     placeholder="Ej: Estudiar para el parcial"
-                    className="flex-1 h-12 ml-3 font-manrope text-primary-dark"
+                    placeholderTextColor={colorScheme === 'dark' ? '#64748b' : undefined}
+                    className="flex-1 h-12 ml-3 font-manrope text-primary-dark dark:text-white"
                   />
                 </View>
               </View>
 
               {/* Fecha */}
               <View className="mt-4">
-                <Text className="text-primary-dark font-manrope font-semibold mb-2 ml-1">Fecha Límite</Text>
-                <View className="flex-row items-center bg-gray-50 border border-secondary rounded-2xl px-4 py-1">
+                <Text className="text-primary-dark dark:text-gray-300 font-manrope font-semibold mb-2 ml-1">Fecha Límite</Text>
+                <View className="flex-row items-center bg-gray-50 dark:bg-dark-card border border-secondary dark:border-slate-700 rounded-2xl px-4 py-1">
                   <Calendar size={20} color="#94a3b8" />
                   <TextInput
                     value={form.limitDate}
                     onChangeText={(val) => setForm({ ...form, limitDate: val })}
                     placeholder="YYYY-MM-DD"
-                    className="flex-1 h-12 ml-3 font-manrope text-primary-dark"
+                    placeholderTextColor={colorScheme === 'dark' ? '#64748b' : undefined}
+                    className="flex-1 h-12 ml-3 font-manrope text-primary-dark dark:text-white"
                   />
                 </View>
               </View>
 
               {/* Descripción */}
               <View className="mt-4">
-                <Text className="text-primary-dark font-manrope font-semibold mb-2 ml-1">Descripción (opcional)</Text>
-                <View className="flex-row bg-gray-50 border border-secondary rounded-2xl px-4 py-3 min-h-[100px]">
+                <Text className="text-primary-dark dark:text-gray-300 font-manrope font-semibold mb-2 ml-1">Descripción (opcional)</Text>
+                <View className="flex-row bg-gray-50 dark:bg-dark-card border border-secondary dark:border-slate-700 rounded-2xl px-4 py-3 min-h-[100px]">
                   <AlignLeft size={20} color="#94a3b8" />
                   <TextInput
                     value={form.description}
                     onChangeText={(val) => setForm({ ...form, description: val })}
                     placeholder="Escribe aquí los detalles..."
+                    placeholderTextColor={colorScheme === 'dark' ? '#64748b' : undefined}
                     multiline
-                    className="flex-1 ml-3 font-manrope text-primary-dark text-start"
+                    className="flex-1 ml-3 font-manrope text-primary-dark dark:text-white text-start"
                     textAlignVertical="top"
                   />
                 </View>
@@ -155,7 +161,7 @@ export default function AddNoteModal({ isVisible, onClose, onSave }: AddNoteModa
 
               {/* Selector de Color */}
               <View className="mt-6 mb-8">
-                <Text className="text-primary-dark font-manrope font-semibold mb-3 ml-1">Color de la Nota</Text>
+                <Text className="text-primary-dark dark:text-gray-300 font-manrope font-semibold mb-3 ml-1">Color de la Nota</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
                   {colors.map((c) => (
                     <TouchableOpacity

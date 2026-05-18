@@ -14,16 +14,16 @@ export default function HomeScreen() {
   }, [isToken, payload]);
 
   return (
-    <View className="flex-1 bg-background justify-center items-center px-6">
-      <View className="w-full bg-white p-8 rounded-3xl shadow-sm border border-secondary items-center">
-        <Text className="text-3xl font-manrope font-bold text-primary-dark mb-2">
+    <View className="flex-1 bg-background dark:bg-dark-bg justify-center items-center px-6">
+      <View className="w-full bg-white dark:bg-dark-card p-8 rounded-3xl shadow-sm border border-secondary dark:border-slate-700 items-center">
+        <Text className="text-3xl font-manrope font-bold text-primary-dark dark:text-white mb-2">
           Mi Agenda
         </Text>
         
         {isToken && payload ? (
           <>
-            <Text className="text-center text-gray-500 font-manrope mb-8">
-              Bienvenido de nuevo, <Text className="font-bold text-primary">{payload.username}</Text>
+            <Text className="text-center text-gray-500 dark:text-gray-400 font-manrope mb-8">
+              Bienvenido de nuevo, <Text className="font-bold text-primary dark:text-blue-400">{payload.username}</Text>
             </Text>
             <TouchableOpacity 
               onPress={() => router.push('/agenda')} // Ahora a la agenda
@@ -36,7 +36,7 @@ export default function HomeScreen() {
           </>
         ) : (
           <>
-            <Text className="text-center text-gray-500 font-manrope mb-8">
+            <Text className="text-center text-gray-500 dark:text-gray-400 font-manrope mb-8">
               Tu agenda personal ahora en tu dispositivo móvil con una experiencia premium.
             </Text>
 

@@ -16,11 +16,21 @@ export const loginHttp = async (loginValues: ILoginUser): Promise<string> => {
 
 export const authMeHttp = async (): Promise<IPayloadAuth> => {
     try {
-        const res = await api.get(`${authUrl}/me`);
+        const res = await api.get(`${authUrl}/me`)
+        return res.data
+    } catch (error) {
+        console.error("Error fetching user data", error)
+        throw error
+    }
+}
+
+export const getGoogleAuthUrlHttp = async (redirectUrl: string): Promise<{ url: string }> => {
+    try {
+        const res = await api.get(`${authUrl}/google?redirect=${encodeURIComponent(redirectUrl)}`);
         return res.data;
     } catch (error) {
-        console.error(error)
-        throw error
+        console.error("Error fetching Google Auth URL", error);
+        throw error;
     }
 }
 
