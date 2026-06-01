@@ -33,7 +33,7 @@ export default function AgendaScreen() {
 
   const handleLogout = async () => {
     await logout();
-    router.replace('/');
+    router.replace('/login');
   };
 
   const handleAddNote = async (formValues: any) => {
@@ -97,7 +97,7 @@ export default function AgendaScreen() {
                 className="flex-row items-center px-4 py-4 border-b border-secondary/50 dark:border-slate-700"
                 onPress={() => {
                   setIsUserMenuVisible(false);
-                  // Pronto: Navegar a Ajustes
+                  router.push('/profile');
                 }}
               >
                 <Settings size={20} color="#64748b" />
