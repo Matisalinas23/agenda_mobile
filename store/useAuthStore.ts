@@ -57,13 +57,8 @@ const useAuthStore = create<IAuthStore>((set, get) => ({
 
             // Define the redirect URL back to the app
             const redirectUrl = Linking.createURL("login");
-            console.log("MOBILE - Redirect URL generated:", redirectUrl);
-
             const { url } = await getGoogleAuthUrlHttp(redirectUrl);
-            console.log("MOBILE - Auth URL received:", url);
-
             const result = await WebBrowser.openAuthSessionAsync(url, redirectUrl);
-            console.log("MOBILE - Auth Session Result:", result);
 
             if (result.type === 'success' && result.url) {
                 const urlObj = new URL(result.url);
