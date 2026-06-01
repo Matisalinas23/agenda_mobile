@@ -160,7 +160,7 @@ export default function LoginScreen() {
             {/* Register Link */}
             <View className="flex-row justify-center mt-auto pt-10">
               <Text className="text-gray-500 dark:text-gray-400 font-manrope">¿No tienes una cuenta? </Text>
-              <Link href="/register" asChild>
+              <Link href={"/register" as any} asChild>
                 <TouchableOpacity>
                   <Text className="text-primary font-manrope font-bold">Regístrate</Text>
                 </TouchableOpacity>
